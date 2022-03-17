@@ -1,0 +1,58 @@
+
+#include "Keyboard.h"
+
+void typeKey(uint8_t key)
+{
+  Keyboard.press(key);
+  delay(50);
+  Keyboard.release(key);
+}
+
+/* Init function */
+void setup()
+{
+  Keyboard.begin();
+
+  delay(500);
+
+  delay(600);
+  // Linux run dialog
+  Keyboard.press(KEY_LEFT_ALT);
+  Keyboard.press(KEY_F2);
+  Keyboard.releaseAll();
+
+  delay(200);
+  // Mac OS run dialog
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press(' ');
+  Keyboard.releaseAll();
+
+  delay(200);
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press(' ');
+  Keyboard.releaseAll();
+
+  delay(200);
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press(' ');
+  Keyboard.releaseAll();
+
+  delay(200);
+  Keyboard.press(KEY_LEFT_GUI);
+  Keyboard.press('r');
+  Keyboard.releaseAll();
+
+  delay(200);
+  for(int i = 0; i < 4; i++) {
+    typeKey(KEY_DELETE);
+  }
+
+  // Type in URL and open page!
+  Keyboard.print(F("http://example.com/"));
+
+  typeKey(KEY_RETURN);
+
+  Keyboard.end();
+}
+
+void loop() {}
